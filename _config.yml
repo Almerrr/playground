@@ -1,0 +1,15 @@
+# Site settings
+title: Playground
+email: your-email@domain.com
+description: Basic test playground
+baseurl: ""
+url: ""
+
+keep_files: ['assets']
+exclude: ['node_modules', 'gulpfile.js', 'package.json']
+
+source: source/_html
+destination: site
+
+# Build settings
+markdown: kramdown
