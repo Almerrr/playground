@@ -15,17 +15,15 @@ var jekyll = process.platform === "win32" ? "jekyll.bat" : "jekyll";
 gulp.task('sass', function() {
     return gulp.src('source/_sass/*.scss')
     .pipe(
-        sass({
-            outputStyle: 'nested'
-        })
-    )
-    .pipe(
         gutil.env.sourcemaps ? sourcemaps.init() : gutil.noop()
     )
     .pipe(
         sass({
             outputStyle: gutil.env.production ? 'compressed' : 'nested'
         })
+    )
+    .pipe(
+        gutil.env.sourcemaps ? sourcemaps.write() : gutil.noop()
     )
     .pipe(
         gulp.dest('site/assets/css')
