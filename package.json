@@ -1,11 +1,8 @@
 {
-  "name": "Platform-Site",
+  "name": "Playground",
   "version": "1.0.0",
   "description": "",
   "main": "gulpfile.js",
-  "dependencies": {
-
-  },
   "devDependencies": {
     "browser-sync": "^2.9.11",
     "gulp": "^3.9.0",
