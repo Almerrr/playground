@@ -3,6 +3,7 @@ var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 var browser = require('browser-sync');
 var notify = require('gulp-notify');
+var plumber = require('gulp-plumber');
 var cp = require('child_process');
 var merge = require('merge-stream');
 var concat = require('gulp-concat');
@@ -10,10 +11,23 @@ var gutil = require('gulp-util');
 var jshint = require('gulp-jshint');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
+
 var jekyll = process.platform === "win32" ? "jekyll.bat" : "jekyll";
+
+function showError(title, error){
+    notify.onError({title: title, message: error.formatted})(error); //Error Notification
+};
 
 gulp.task('sass', function() {
     return gulp.src('source/_sass/*.scss')
+    .pipe(
+        plumber({
+            errorHandler: function (err) {
+                showError('Sass error', err)
+                this.emit('end');
+            }
+        })
+    )
     .pipe(
         gutil.env.sourcemaps ? sourcemaps.init() : gutil.noop()
     )
@@ -37,16 +51,35 @@ gulp.task('jsHint', function() {
     browser.notify("Running JS Hinting");
     return gulp.src(['source/_js/*.js', '!source/_js/libs/**/*.js'])
     .pipe(
+        plumber({
+            errorHandler: function (err) {
+                showError('JsHint error', err)
+                this.emit('end');
+            }
+        })
+    )
+    .pipe(
         jshint()
     )
     .pipe(
         jshint.reporter('jshint-stylish')
+    )
+    .pipe(
+        jshint.reporter('fail')
     );
 });
 
 gulp.task('jsMinify', ['jsHint'], function() {
     browser.notify("Running JS Minify");
     return gulp.src(['source/_js/*.js'], {base: "./source/_js/"})
+    .pipe(
+        plumber({
+            errorHandler: function (err) {
+                showError('JS Minify error', err)
+                this.emit('end');
+            }
+        })
+    )
     .pipe(
         gutil.env.production ? uglify() : gutil.noop()
     )
