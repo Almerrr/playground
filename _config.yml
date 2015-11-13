@@ -2,7 +2,7 @@
 title: Playground
 email: your-email@domain.com
 description: Basic test playground
-baseurl: ""
+baseurl: "/"
 url: ""
 
 keep_files: ['assets']
@@ -13,3 +13,7 @@ destination: site
 
 # Build settings
 markdown: kramdown
+
+collections:
+  my_collection:
+    output: true

@@ -11,14 +11,14 @@
     </div>
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav ">
-        {% assign pages = site.pages | sort:"weight"  %}
-          {% for p in pages %}
-            <li {% if p.url == page.url %}class="active"{% endif %}>
+		  {% assign sorted_pages = (site.pages | sort: 'title') %}
+			{% for p in sorted_pages %}
+			<li {% if p.url == page.url %}class="active"{% endif %}>
               <a href="{{ p.url }}">
                 {{ p.title }}
               </a>
             </li>
-          {% endfor %}
+			{% endfor %}
       </ul>
     </div>
   </div>
