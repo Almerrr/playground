@@ -3,9 +3,37 @@ var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 
 var plumber = require('gulp-plumber');
-var changed = require('gulp-changed');
+// var changed = require('gulp-changed');
 var concat = require('gulp-concat');
-var merge =
+
+var cached = require('gulp-cached');
+
+var htmlbeautify = require('gulp-html-beautify');
+
+var beautifyOption = {
+    "indent_size": 4,
+    "indent_char": " ",
+    "eol": "\n",
+    "indent_level": 0,
+    "indent_with_tabs": false,
+    "preserve_newlines": false,
+    "max_preserve_newlines": 1,
+    "jslint_happy": false,
+    "space_after_anon_function": false,
+    "brace_style": "collapse",
+    "keep_array_indentation": true,
+    "keep_function_indentation": true,
+    "space_before_conditional": true,
+    "break_chained_methods": false,
+    "eval_code": false,
+    "unescape_strings": false,
+    "wrap_line_length": 0,
+    "wrap_attributes": "auto",
+    "wrap_attributes_indent_size": 4,
+    "end_with_newline": true
+};
+
+
 // var format = require('gulp-jsbeautifier');
 // var removeEmptyLines = require('gulp-remove-empty-lines');
 // var minifyInline = require('gulp-minify-inline');
@@ -17,7 +45,8 @@ gulp.task('develop', function() {
     });
 
     gulp.watch(['build/pages/**/*.html']).on('change', function(file) {
-        formatHtml(file);
+        // formatHtml(file);
+        gulp.start('format-html');
     });
 
     gulp.watch('source/_js/**/*').on('change', function(file) {
@@ -66,36 +95,26 @@ gulp.task('concat-js', function() {
     return core;
 });
 
-var htmlbeautify = require('gulp-html-beautify');
-var beautifyOption = {
-    "indent_size": 4,
-    "indent_char": " ",
-    "eol": "\n",
-    "indent_level": 0,
-    "indent_with_tabs": false,
-    "preserve_newlines": false,
-    "max_preserve_newlines": 1,
-    "jslint_happy": false,
-    "space_after_anon_function": false,
-    "brace_style": "collapse",
-    "keep_array_indentation": true,
-    "keep_function_indentation": true,
-    "space_before_conditional": true,
-    "break_chained_methods": false,
-    "eval_code": false,
-    "unescape_strings": false,
-    "wrap_line_length": 0,
-    "wrap_attributes": "auto",
-    "wrap_attributes_indent_size": 4,
-    "end_with_newline": true
-};
+// function formatHtml(file) {
+//     return gulp.src(file.path)
+//     .pipe(
+//         htmlbeautify(beautifyOption)
+//     )
+//     .pipe(
+//         gulp.dest('build/pages')
+//     );
+// }
 
-function formatHtml(file) {
-    return gulp.src(file.path)
+gulp.task('format-html', function() {
+    return gulp.src(['build/pages/**/*.html'])
     .pipe(
         htmlbeautify(beautifyOption)
     )
     .pipe(
+        cached('html-format')
+    )
+    .pipe(
         gulp.dest('build/pages')
     );
-}
+    return core;
+});
