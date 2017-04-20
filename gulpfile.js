@@ -1,14 +1,13 @@
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
-
 var plumber = require('gulp-plumber');
-// var changed = require('gulp-changed');
+var cp = require('child_process');
+var gutil = require('gulp-util');
 var concat = require('gulp-concat');
-
 var cached = require('gulp-cached');
-
 var htmlbeautify = require('gulp-html-beautify');
+var siteServer = require("browser-sync").create('siteServer');
 
 var beautifyOption = {
     "indent_size": 4,
@@ -40,12 +39,17 @@ var beautifyOption = {
 // var legacyIeCssLint = require('gulp-legacy-ie-css-lint');
 
 gulp.task('develop', function() {
+    gulp.start('siteServer');
+
     gulp.watch(['source/_sass/**/*']).on('change', function(file) {
         gulp.start('compile-sass');
     });
 
+    gulp.watch(['source/_html/**/*.html']).on('change', function(file) {
+        gulp.start('jekyll-build');
+    });
+
     gulp.watch(['build/pages/**/*.html']).on('change', function(file) {
-        // formatHtml(file);
         gulp.start('format-html');
     });
 
@@ -53,6 +57,27 @@ gulp.task('develop', function() {
         gulp.start('concat-js');
     });
 });
+
+gulp.task('siteServer', function() {
+    siteServer.init({
+        server: {
+            baseDir: "build",
+            https: false
+        },
+        open: false,
+        port: 2000,
+        ui: {
+            port: 2001
+        },
+        notify: false
+    });
+});
+
+gulp.task('jekyll-build', (code) => {
+  return cp.spawn('jekyll', ['build', '--incremental'], { stdio: 'inherit' })
+    .on('error', (error) => gutil.log(gutil.colors.red(error.message)))
+    .on('close', code);
+})
 
 gulp.task('compile-sass', function() {
     return gulp.src(['source/_sass/**/*.scss'])
