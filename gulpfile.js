@@ -8,6 +8,7 @@ var concat = require('gulp-concat');
 var cached = require('gulp-cached');
 var htmlbeautify = require('gulp-html-beautify');
 var siteServer = require("browser-sync").create('siteServer');
+var jekyll = process.platform === "win32" ? "jekyll.bat" : "jekyll";
 
 var beautifyOption = {
     "indent_size": 4,
@@ -46,7 +47,8 @@ gulp.task('develop', function() {
     });
 
     gulp.watch(['source/_html/**/*.html']).on('change', function(file) {
-        gulp.start('jekyll-build');
+//        gulp.start('jekyll-build');
+        formatHtml(file);
     });
 
     gulp.watch(['build/pages/**/*.html']).on('change', function(file) {
@@ -120,15 +122,15 @@ gulp.task('concat-js', function() {
     return core;
 });
 
-// function formatHtml(file) {
-//     return gulp.src(file.path)
-//     .pipe(
-//         htmlbeautify(beautifyOption)
-//     )
-//     .pipe(
-//         gulp.dest('build/pages')
-//     );
-// }
+ function formatHtml(file) {
+     return gulp.src(file.path)
+     .pipe(
+         htmlbeautify(beautifyOption)
+     )
+     .pipe(
+         gulp.dest('build/pages')
+     );
+ }
 
 gulp.task('format-html', function() {
     return gulp.src(['build/pages/**/*.html'])
