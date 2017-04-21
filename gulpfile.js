@@ -47,12 +47,12 @@ gulp.task('develop', function() {
     });
 
     gulp.watch(['source/_html/**/*.html']).on('change', function(file) {
-//        gulp.start('jekyll-build');
-        formatHtml(file);
+       gulp.start('jekyll-build');
     });
 
     gulp.watch(['build/pages/**/*.html']).on('change', function(file) {
-        gulp.start('format-html');
+        // gulp.start('format-html');
+        formatHtml(file);
     });
 
     gulp.watch('source/_js/**/*').on('change', function(file) {
@@ -76,7 +76,7 @@ gulp.task('siteServer', function() {
 });
 
 gulp.task('jekyll-build', (code) => {
-  return cp.spawn('jekyll', ['build', '--incremental'], { stdio: 'inherit' })
+  return cp.spawn(jekyll, ['build', '--incremental'], { stdio: 'inherit' })
     .on('error', (error) => gutil.log(gutil.colors.red(error.message)))
     .on('close', code);
 })
@@ -123,6 +123,7 @@ gulp.task('concat-js', function() {
 });
 
  function formatHtml(file) {
+     console.log("cleaning file: " + file.path);
      return gulp.src(file.path)
      .pipe(
          htmlbeautify(beautifyOption)
