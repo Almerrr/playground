@@ -24,7 +24,6 @@ exclude: ['node_modules', 'gulpfile.js', 'package.json']
 
 source: source/_html
 destination: build
-incremental: true
 
 # Build settings
 markdown: kramdown

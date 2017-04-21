@@ -81,6 +81,13 @@ gulp.task('jekyll-build', (code) => {
     .on('close', code);
 })
 
+gulp.task('jekyll-build-all', (code) => {
+  return cp.spawn(jekyll, ['build'], { stdio: 'inherit' })
+    .on('error', (error) => gutil.log(gutil.colors.red(error.message)))
+    .on('close', code);
+    gulp.start('format-html');
+})
+
 gulp.task('compile-sass', function() {
     return gulp.src(['source/_sass/**/*.scss'])
     .pipe(
